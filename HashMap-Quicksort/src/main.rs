@@ -39,7 +39,7 @@ fn main() {
         to that memory exists at any one time.  If you were to clone it and create a new RefCell
         that pointed to that same memory location, neither would know of the other's existence, and you could
         end up with undefined behaviour.  (See: https://manishearth.github.io/blog/2015/05/17/the-problem-with-shared-mutability/
-        for a good explanation as to why this is required in a single-threaded environment  TL;DR:
+        for a good explanation as to why this is required in a single-threaded environment.  TL;DR:
         most of the time it doesn't matter, but it's also something you don't want to fuck up).  By
         wrapping it in an Rc, we can access the same RefCell each time and simply clone the Rc to
         keep the borrow checker happy.  TL;DR: Cloning Rc creates a new IMMUTABLE reference to the
@@ -59,7 +59,7 @@ fn main() {
         let length = j.borrow().len() - 1;
         // Start at timer to measure the execution time
         let exec_time = Instant::now();
-        // Called `quicksort()` on a clone of `j` (creating a new Rc pointer)
+        // Call `quicksort()` on a clone of `j` (creating a fresh copy of the Rc pointer)
         quicksort(j.clone(), 0, length);
         // Print the execution time for kicks
         println!("Execution Time: {:?}", exec_time.elapsed());
@@ -88,10 +88,12 @@ fn quicksort(array: Rc<RefCell<Vec<u8>>>, low: usize, high: usize) {
         // Call partition
         let pi = partition(array.clone(), low, high);
 
-        // If the partition index is greater the original "low" index, call it recursively - otherwise
-        // there's no point.  You could omit this and the `if low < high` call would catch the exception anyway
-        // Notice - array (our Rc pointer) is cloned to keep the borrow checker happy
-        if pi > low {
+        // In a situation where `pi` is 0, we don't want to attempt to go negative on a usize.  This
+        // could happen if the value at the pivot was smaller than all values in the array, and low
+        // was equal to 0.  Why usize? Rust only indexes vectors with usize's without extra
+        // implementation.  I'm sure someone could work out the tradeoff between running an extra CMP
+        // instruction on each loop vs implementing indexing with signed integers, but this is easier
+        if pi > 0 {
             quicksort(array.clone(), low, pi - 1)
         }
         // Call quicksort on all the elements above the partition index.  Again, cloning the Rc pointer
