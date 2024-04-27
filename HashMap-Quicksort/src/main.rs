@@ -91,7 +91,7 @@ fn quicksort(array: Rc<RefCell<Vec<u8>>>, low: usize, high: usize) {
         // In a situation where `pi` is 0, we don't want to attempt to go negative on a usize.  This
         // could happen if the value at the pivot was smaller than all values in the array, and low
         // was equal to 0.  Why usize? Rust only indexes vectors with usize's without extra
-        // implementation.  I'm sure someone could work out the tradeoff between running an extra CMP
+        // implementation.  I'm sure someone could work out the tradeoff between running an extra CMP or JZ
         // instruction on each loop vs implementing indexing with signed integers, but this is easier
         if pi > 0 {
             quicksort(array.clone(), low, pi - 1)
