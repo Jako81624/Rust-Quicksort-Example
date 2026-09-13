@@ -36,7 +36,7 @@ fn quicksort(mut data: Vec<usize>) -> Vec<usize> {
         lr_vec = data;
     // However, any vector with more than two items requires sorting
     } else {
-        // The last items is guaranteed to be the largest, so pop it off the vector to avoid
+        // The last item is guaranteed to be the largest, so pop it off the vector to avoid
         // sorting it unnecessarily
         let pivot = data.pop().unwrap();
         // Recursively quicksort the remaining values
