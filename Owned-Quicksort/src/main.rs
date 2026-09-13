@@ -3,13 +3,14 @@ use std::time::Instant;
 fn main() {
     // Create a vector of randomly ordered integers
     let t_vec = vec![2,12,7,9,8,44,10,3,56,3,1,5,87,5,19];
+    let cloned_vec = t_vec.clone();
     // Call quicksort on a cloned copy of the vector (such that the ownership of the original vector is not lost)
     let exec_time = Instant::now();
-    let s_vec = quicksort(t_vec.clone());
+    let s_vec = quicksort(t_vec);
     let time_elapsed = exec_time.elapsed();
 
     // Print the original and sorted vectors
-    println!("{t_vec:?}");
+    println!("{cloned_vec:?}");
     println!("{s_vec:?}");
     println!("Time elapsed: {:?}", time_elapsed);
 }
@@ -18,7 +19,7 @@ fn quicksort(mut data: Vec<usize>) -> Vec<usize> {
     // Recursive calls will inevitably result in a zero-length vector.  A length of 1 clearly doesn't require sorting, so
     // we exit prematurely on anything less than that
     if data.len() <= 1 { return data }
-    println!("Called quicksort");
+    //println!("Called quicksort");
 
     // Retrieve the index at which all items below are lesser than, and all items above are greater than
     let partition_idx = partition(&mut data);
